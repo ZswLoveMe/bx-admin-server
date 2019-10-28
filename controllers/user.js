@@ -8,15 +8,11 @@ module.exports = {
     let {email} = ctx.request.query
     //查询数据库中是否存在该用户名
     let user = await userModel.findUserByName(email)
-    console.log("user：", user)
-    if (user.length === 0) {
-      ctx.body = new ErrorModel("找不到该用户")
-      return
-    }
     ctx.body = new SuccessModel(user)
   },
   logout: function (ctx, next) {
-    ctx.body = new SuccessModel("退出成功",)
+    console.log('ctx：', ctx)
+    ctx.body = new ErrorModel("退出成功")
     return
   },
   doLogin: async function (ctx, next) {

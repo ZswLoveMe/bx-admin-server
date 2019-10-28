@@ -22,7 +22,8 @@ app.listen(appPort, () => {
 //优雅处理异常
 app.use(async (ctx,next) => {
   try {
-    if ( !ctx.request.url.startsWith('/get-portrait') &&  ctx.request.url !== '/user/do-logout'  &&  ctx.request.url !== '/user/do-login'  &&  ! ctx.request.url.startsWith('/public')) {
+    console.log('ctx.request.url：', ctx.request.url)
+    if ( !ctx.request.url.startsWith('/user/get-portrait') &&  ctx.request.url !== '/user/do-logout'  &&  ctx.request.url !== '/user/do-login'  &&  ! ctx.request.url.startsWith('/public')) {
       let token = ctx.headers.token;
       console.log('token1：', token)
       let jwt = new JwtUtil(token);
