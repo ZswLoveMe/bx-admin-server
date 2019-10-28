@@ -16,6 +16,7 @@
   "dependencies": {
     "art-template": "^4.12.2",
     "captchapng2": "^1.0.3",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.5.1",
     "koa-art-template": "^1.1.1",
     "koa-bodyparser": "^4.2.1",

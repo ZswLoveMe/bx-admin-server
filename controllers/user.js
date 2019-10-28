@@ -1,21 +1,44 @@
-
-const userModel = require('../models/user.js');
+const userModel = require("../models/user.js")
+const {ErrorModel} = require("../models/resModel")
+const {SuccessModel} = require("../models/resModel")
+const JwtUtil = require('../utils/jwt');
 module.exports = {
-  checkUserName: async function (ctx,next) {
+  getPortrait: async function (ctx, next) {
     //接收请求的繁琐事务
-    let { username } = ctx.request.body;
+    let {email} = ctx.request.query
     //查询数据库中是否存在该用户名
-    let user = await userModel.findUserByname(username);
-    if (user.length === 0){
-      ctx.body = {code:'001',msg:"可以注册"}
-      return;
+    let user = await userModel.findUserByName(email)
+    console.log("user：", user)
+    if (user.length === 0) {
+      ctx.body = new ErrorModel("找不到该用户")
+      return
     }
-    ctx.body = {code:'002',msg:"用户名已经存在"}
+    ctx.body = new SuccessModel(user)
   },
-  doRegister: function () {
+  logout: function (ctx, next) {
+    ctx.body = new SuccessModel("退出成功",)
+    return
+  },
+  doLogin: async function (ctx, next) {
+    let {email, password} = ctx.request.body
 
-  },
-  doLogin:function () {
-    
+    let user = await userModel.findUserByName(email)
+    if(user.length === 0){
+      ctx.body = new ErrorModel("用户名不正确")
+      return
+    }
+    if(user[0].password.trim() !== password){
+      ctx.body = new ErrorModel("密码不正确")
+      return
+    }
+    let jwt = new JwtUtil(user[0].id);
+    let token = jwt.generateToken();
+    console.log('token：', token)
+    let result = {
+      state:true,
+      token:token
+    }
+    ctx.body = new SuccessModel(result,"登录成功",)
+    return
   }
 }

@@ -4,8 +4,8 @@ let userRouter = new Router()
 
 const userControllers = require('../controllers/user')
 
-userRouter.post('/user/check_username', userControllers.checkUserName)
-  .post('/user/do_register', userControllers.doRegister)
+userRouter.get('/user/get-portrait', userControllers.getPortrait)
+  .post('/user/do-logout', userControllers.logout)
   .post('/user/do-login', userControllers.doLogin)
 
 module.exports = userRouter

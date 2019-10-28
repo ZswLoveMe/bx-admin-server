@@ -2,9 +2,11 @@ const Koa = require("koa");
 const {appPort,viewsRoot,staticRoot} = require('./config.js');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
+const JwtUtil = require('./utils/jwt');
 
 // 引入中间件
 const usersRouter = require('./routers/users')
+const {ErrorModel} = require("../es6/ydc/blogs/src/model/resModel")
 
 // 创建服务器
 
@@ -16,15 +18,29 @@ app.listen(appPort, () => {
   console.log("run....");
 });
 
+
 //优雅处理异常
 app.use(async (ctx,next) => {
   try {
+    if ( !ctx.request.url.startsWith('/get-portrait') &&  ctx.request.url !== '/user/do-logout'  &&  ctx.request.url !== '/user/do-login'  &&  ! ctx.request.url.startsWith('/public')) {
+      let token = ctx.headers.token;
+      console.log('token1：', token)
+      let jwt = new JwtUtil(token);
+      let result = jwt.verifyToken();
+      // 如果考验通过就next，否则就返回登陆信息不正确
+      if (result === 'err') {
+        console.log(result);
+        ctx.render({status: 403, msg: '登录已过期,请重新登录'})
+      } else {
+        next();
+      }
+    }
     //先放行
     await next();
   }catch (e) {
     // 根据之前的
     // e.code之类的状态码002
-    ctx.render('error',{msg:'002状态错误，原因是:xxx'})
+    ctx.render({msg:'002状态错误，原因是:xxx'})
   }
 })
 
@@ -36,9 +52,11 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-
 //处理静态资源
 app.use(require('koa-static')(staticRoot));
+
+
+
 
 app.keys = ['zsw']; //基于zsw字符串进行签名运算 保证数据不被串改
 let store = {
