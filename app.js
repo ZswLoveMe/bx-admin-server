@@ -6,6 +6,8 @@ const JwtUtil = require('./utils/jwt');
 
 // 引入中间件
 const usersRouter = require('./routers/users')
+const pandectRouter = require('./routers/pandect')
+const articleRouter = require('./routers/article')
 const {ErrorModel} = require("../es6/ydc/blogs/src/model/resModel")
 
 // 创建服务器
@@ -22,20 +24,20 @@ app.listen(appPort, () => {
 //优雅处理异常
 app.use(async (ctx,next) => {
   try {
-    console.log('ctx.request.url：', ctx.request.url)
-    if ( !ctx.request.url.startsWith('/user/get-portrait') &&  ctx.request.url !== '/user/do-logout'  &&  ctx.request.url !== '/user/do-login'  &&  ! ctx.request.url.startsWith('/public')) {
-      let token = ctx.headers.token;
-      console.log('token1：', token)
-      let jwt = new JwtUtil(token);
-      let result = jwt.verifyToken();
-      // 如果考验通过就next，否则就返回登陆信息不正确
-      if (result === 'err') {
-        console.log(result);
-        ctx.render({status: 403, msg: '登录已过期,请重新登录'})
-      } else {
-        next();
-      }
-    }
+    // console.log('ctx.request.url：', ctx.request.url)
+    // if ( !ctx.request.url.startsWith('/user/get-portrait') &&  ctx.request.url !== '/user/do-logout'  &&  ctx.request.url !== '/user/do-login'  &&  ! ctx.request.url.startsWith('/public')) {
+    //   let token = ctx.headers.token;
+    //   console.log('token1：', token)
+    //   let jwt = new JwtUtil(token);
+    //   let result = jwt.verifyToken();
+    //   // 如果考验通过就next，否则就返回登陆信息不正确
+    //   if (result === 'err') {
+    //     console.log(result);
+    //     ctx.render({status: 403, msg: '登录已过期,请重新登录'})
+    //   } else {
+    //     next();
+    //   }
+    // }
     //先放行
     await next();
   }catch (e) {
@@ -82,3 +84,9 @@ app.use(bodyParser());
 
 app.use(usersRouter.routes());
 app.use(usersRouter.allowedMethods());
+
+app.use(articleRouter.routes());
+app.use(articleRouter.allowedMethods());
+
+app.use(pandectRouter.routes());
+app.use(pandectRouter.allowedMethods());

@@ -37,14 +37,14 @@ db.first = (sql, ...params) => {
           reject(error)
           return
         }
-        resolve(res[0] || null)
+        let result = JSON.parse(JSON.stringify(res[0]))
+        resolve(result || null)
       })
     })
   })
 }
 
 //返回单个查询结果
-
 db.single = (sql, ...params) => {
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, connection) {
@@ -81,7 +81,7 @@ db.execute = (sql, ...params) => {
           reject(error)
           return
         }
-        resolve(res)
+       resolve(res[0])
       })
     })
   })
