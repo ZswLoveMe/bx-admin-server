@@ -29,11 +29,11 @@ module.exports = {
     }
     let jwt = new JwtUtil(user[0].id);
     let token = jwt.generateToken();
-    console.log('token：', token)
     let result = {
       state:true,
       token:token
     }
+    ctx.session.userInfo = user[0]
     ctx.body = new SuccessModel(result,"登录成功",)
     return
   }
