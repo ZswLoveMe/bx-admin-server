@@ -39,15 +39,61 @@ module.exports = {
     })
   },
   updateArticle: async (ctx, next) => {
-    let  posts = ctx.request.body
+    let posts = ctx.request.body
     // 获取session 中的 user
-    let  user = ctx.session['userInfo']
-    posts.userId =  user.id
+    let user = ctx.session["userInfo"]
+    posts.userId = user.id
     await articleModel.updateArticle(posts).then(res => {
-      if(res.affectedRows > 0){
+      if (res.affectedRows > 0) {
         ctx.body = new SuccessModel(true, "编辑成功")
-      }else{
+      } else {
         ctx.body = new SuccessModel(false, "编辑失败")
+      }
+    })
+  },
+  addArticle: async (ctx, next) => {
+    let posts = ctx.request.body
+    // 获取session 中的 user
+    let user = ctx.session["userInfo"]
+    posts.userId = user.id
+    await articleModel.addArticle(posts).then(res => {
+      if (res.affectedRows > 0) {
+        ctx.body = new SuccessModel(true, "新建成功")
+      } else {
+        ctx.body = new SuccessModel(false, "新建失败")
+      }
+    })
+  },
+  getCategories: async (ctx, next) => {
+    await articleModel.getCategories().then(res => {
+      ctx.body = new SuccessModel(res, "查询成功")
+    })
+  },
+  addCategories: async (ctx, next) => {
+    let categories = ctx.request.body
+    await articleModel.addCategories(categories).then(res => {
+      if (res.affectedRows > 0) {
+        ctx.body = new SuccessModel(true, "添加成功")
+      }else{
+        ctx.body = new SuccessModel(false, "添加失败")
+      }
+    })
+
+  },
+  getCategoriesById:async (ctx,next) => {
+    let {id} = ctx.request.body
+    console.log('id：', id)
+    await articleModel.getCategoriesById(id).then(res => {
+      ctx.body = new SuccessModel(res, "查询成功")
+    })
+  },
+  updateCategories:async (ctx,next) => {
+    let categories = ctx.request.body
+    await articleModel.updateCategories(categories).then(res => {
+      if (res.affectedRows > 0) {
+        ctx.body = new SuccessModel(true, "更新成功")
+      }else{
+        ctx.body = new SuccessModel(false, "更新失败")
       }
     })
   }

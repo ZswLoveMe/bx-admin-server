@@ -8,6 +8,7 @@ const usersRouter = require('./routers/users')
 const pandectRouter = require('./routers/pandect')
 const articleRouter = require('./routers/article')
 const uploadeRouter = require('./routers/upload')
+const commentsRouter = require('./routers/comments')
 
 const checkLogin = require('./models/checkLogin')
 // 创建服务器
@@ -51,7 +52,7 @@ let store = {
 app.keys = ['zsw']; //基于zsw字符串进行签名运算 保证数据不被串改
 app.use(session({store:store},app));
 // 判断某些页面url的时候是否有session上的url(登陆)
-app.use(checkLogin);
+// app.use(checkLogin);
 
 
 //处理请求体数据
@@ -69,3 +70,6 @@ app.use(pandectRouter.allowedMethods());
 
 app.use(uploadeRouter.routes())
 app.use(uploadeRouter.allowedMethods())
+
+app.use(commentsRouter.routes())
+app.use(commentsRouter.allowedMethods())
